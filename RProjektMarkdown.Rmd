@@ -1,0 +1,51 @@
+---
+title: "RProjekt"
+author: "Hanna Siegfried"
+date: "9 12 2019"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+# Geo-Visualisierung
+## Darstellung der Karte
+
+### Loading necessary packages
+```{r message=FALSE}
+if (!require(sf)) install.packages("sf",dependencies=TRUE)
+if (!require(ggplot2)) install.packages("ggplot2",dependencies=TRUE)
+if (!require(dplyr)) install.packages("dplyr",dependencies=TRUE)
+require(dplyr)
+require(sf)
+require(ggplot2)
+```
+
+First of all, the shape file containing all states of Germany is loaded. Afterwards, it is ploted for getting a first representation.
+Source:
+[linked phrase](https://gdz.bkg.bund.de/index.php/default/digitale-geodaten/verwaltungsgebiete/nuts-gebiete-1-250-000-stand-01-01-nuts250-01-01.html) 
+(18.01.20)
+```{r}
+map <- st_read("C:/Users/haaan/Documents/Studium/Semester 5/Datenanalyse mit R/Abgabe/data/2500_NUTS1.shp",stringsAsFactors=FALSE)
+ggplot(map) + geom_sf()
+```
+
+The data containing the result of the 2017 election is imported.
+Source:
+[linked phrase](https://www.bundeswahlleiter.de/dam/jcr/72f186bb-aa56-47d3-b24c-6a46f5de22d0/btw17_kerg.csv) 
+(18.01.20)
+```{r}
+stimmen <- read.csv(file="Studium/Semester 5/Datenanalyse mit R/Abgabe/btw17_kerg.csv", sep=";")
+```
+
+When running R on windows, umlauts are not correctly imported. Therefore the following function searches for  umlauts and replaces them with their correct notation.
+```{r}
+umlaute <- function(variable) { 
+  variable <- gsub("Ã¼","ü",variable) 
+  variable <- gsub("ÃŸ","ß",variable) 
+  variable <- gsub("Ã¶r","ö",variable) 
+  variable <- gsub("Ã¤","ä",variable) 
+  return(variable) }
+
+stimmen$X <- umlaute(stimmen$X)
+```
+# The End
